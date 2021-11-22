@@ -77,7 +77,7 @@ function startServer(charset) {
 		if (folders && Array.isArray(folders)) {
 			if (folders.length === 1) {
 				// single folder
-				const wwwRoot = folders[0].uri.path;
+				const wwwRoot = folders[0].uri.fsPath;
 				// 开始启动
 				serverStatus = STATUS_STARTING;
 				server.start(port, wwwRoot, charset).then(() => {

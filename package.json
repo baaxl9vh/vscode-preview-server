@@ -3,7 +3,7 @@
 	"displayName": "Preview Server",
 	"description": "Preview Server",
 	"publisher": "jjjjkkkk",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"engines": {
 		"vscode": "^1.62.0"
 	},
