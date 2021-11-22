@@ -7,3 +7,11 @@ vsc-extension-quickstart.md
 **/jsconfig.json
 **/*.map
 **/.eslintrc.json
+node_modules/
+
+*.vsix
+output.js
+extension.js
+server.js
+
+public/

@@ -1,11 +1,18 @@
 {
 	"name": "preview-server",
-	"displayName": "Express GBK",
-	"description": "Express GBK",
-	"version": "0.0.1",
+	"displayName": "Preview Server",
+	"description": "Preview Server",
+	"publisher": "jjjjkkkk",
+	"version": "0.0.3",
 	"engines": {
 		"vscode": "^1.62.0"
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/baaxl9vh/vscode-preview-server.git"
+	},
+	"bugs": "https://github.com/baaxl9vh/vscode-preview-server/issues",
+	"homepage": "https://github.com/baaxl9vh/vscode-preview-server/blob/main/README.md",
 	"categories": [
 		"Other"
 	],
@@ -15,7 +22,7 @@
 		"onCommand:preview-server.stopServer",
 		"onCommand:preview-server.open"
 	],
-	"main": "./extension.js",
+	"main": "./main.js",
 	"contributes": {
 		"commands": [
 			{
@@ -37,25 +44,28 @@
 		]
 	},
 	"scripts": {
+		"vscode:prepublish": "npm run esbuild-base -- --minify",
+		"esbuild-base": "esbuild extension.js --bundle --outfile=main.js --external:vscode --format=cjs --platform=node",
+		"esbuild": "npm run esbuild-base -- --sourcemap",
+		"esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
 		"lint": "eslint .",
 		"pretest": "npm run lint",
 		"test": "node ./test/runTest.js"
 	},
 	"dependencies": {
 		"express": "~4.16.1",
-		"http-errors": "~1.6.3",
-		"open": "^8.4.0",
-		"pug": "2.0.0-beta11"
+		"open": "^8.4.0"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.62.0",
 		"@types/glob": "^7.1.4",
 		"@types/mocha": "^9.0.0",
 		"@types/node": "14.x",
+		"@types/vscode": "^1.62.0",
+		"@vscode/test-electron": "^1.6.2",
+		"esbuild": "^0.13.15",
 		"eslint": "^8.1.0",
 		"glob": "^7.1.7",
 		"mocha": "^9.1.3",
-		"typescript": "^4.4.4",
-		"@vscode/test-electron": "^1.6.2"
+		"typescript": "^4.4.4"
 	}
 }
