@@ -3,7 +3,7 @@
 	"displayName": "Preview Server",
 	"description": "Preview Server",
 	"publisher": "jjjjkkkk",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"engines": {
 		"vscode": "^1.62.0"
 	},
@@ -13,6 +13,12 @@
 	},
 	"bugs": "https://github.com/baaxl9vh/vscode-preview-server/issues",
 	"homepage": "https://github.com/baaxl9vh/vscode-preview-server/blob/main/README.md",
+  "keywords": [
+    "web server",
+    "preview server",
+    "http server",
+    "html preview"
+  ],
 	"categories": [
 		"Other"
 	],
@@ -51,6 +57,22 @@
 		"lint": "eslint .",
 		"pretest": "npm run lint",
 		"test": "node ./test/runTest.js"
+	},
+	"configuration": {
+		"type": "object",
+		"title": "Preview Server Configuration",
+		"properties": {
+			"preview-server.port": {
+				"type": "number",
+				"default": 8900,
+				"description": "Preview server port"
+			},
+			"preview-server.charset": {
+				"type": "string",
+				"default": "UTF-8",
+				"description": "Static files charset"
+			}
+		}
 	},
 	"dependencies": {
 		"express": "~4.16.1",

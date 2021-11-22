@@ -46,10 +46,12 @@ function activate(context) {
 		} else if (serverStatus === STATUS_STARTING) {
 			vscode.window.showInformationMessage('Preview Server 正在启动，请等待完成启动再停止');
 		} else if (serverStatus === STATUS_RUNNING) {
-			serverStatus = 3;
+			serverStatus = STATUS_STOPPING;
 			server.stop().then(() => {
+			}).catch((err) => {
+			}).finally(() => {
 				statusBarItem.hide();
-				serverStatus = 0;
+				serverStatus = STATUS_STOPPED;
 				vscode.window.showInformationMessage('Preview Server 已经停止');
 			});
 		} else if (serverStatus === STATUS_STOPPING) {
@@ -77,12 +79,13 @@ function startServer(charset) {
 				// single folder
 				const wwwRoot = folders[0].uri.path;
 				// 开始启动
-				serverStatus = 1;
+				serverStatus = STATUS_STARTING;
 				server.start(port, wwwRoot, charset).then(() => {
-					serverStatus = 2;
+					serverStatus = STATUS_RUNNING;
 					statusBarItem.show();
 					vscode.window.showInformationMessage('Preview Server 启动完成');
 				}).catch((err) => {
+					serverStatus = STATUS_STOPPED;
 					const msg = `Preview Server Error: ${err.code} ${err.message}`;
 					vscode.window.showErrorMessage(msg);
 				});
