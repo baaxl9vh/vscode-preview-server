@@ -1,0 +1,61 @@
+{
+	"name": "preview-server",
+	"displayName": "Express GBK",
+	"description": "Express GBK",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.62.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onCommand:preview-server.startGBK",
+		"onCommand:preview-server.startServer",
+		"onCommand:preview-server.stopServer",
+		"onCommand:preview-server.open"
+	],
+	"main": "./extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "preview-server.startGBK",
+				"title": "Preview Server: Start Server with GBK charset"
+			},
+			{
+				"command": "preview-server.startServer",
+				"title": "Preview Server: Start Server"
+			},
+			{
+				"command": "preview-server.stopServer",
+				"title": "Preview Server: Stop Server"
+			},
+			{
+				"command": "preview-server.open",
+				"title": "Preview Server: Open In Browser"
+			}
+		]
+	},
+	"scripts": {
+		"lint": "eslint .",
+		"pretest": "npm run lint",
+		"test": "node ./test/runTest.js"
+	},
+	"dependencies": {
+		"express": "~4.16.1",
+		"http-errors": "~1.6.3",
+		"open": "^8.4.0",
+		"pug": "2.0.0-beta11"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.62.0",
+		"@types/glob": "^7.1.4",
+		"@types/mocha": "^9.0.0",
+		"@types/node": "14.x",
+		"eslint": "^8.1.0",
+		"glob": "^7.1.7",
+		"mocha": "^9.1.3",
+		"typescript": "^4.4.4",
+		"@vscode/test-electron": "^1.6.2"
+	}
+}
