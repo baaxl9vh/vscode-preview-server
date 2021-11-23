@@ -5,8 +5,8 @@ name: CI
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
-  push:
-    branches: [ main ]
+  # push:
+    # branches: [ main ]
   release:
     types:
     - created
@@ -28,7 +28,6 @@ jobs:
       with:
         node-version: 14.x
     - run: npm install
-    - run: npm install vsce --save-dev
     - run: xvfb-run -a npm test
       if: runner.os == 'Linux'
     - run: npm test
