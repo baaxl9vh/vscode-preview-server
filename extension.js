@@ -19,11 +19,17 @@ const STATUS_RUNNING = 2;
 // 正在停止
 const STATUS_STOPPING = 3;
 
+// configuration section name
+const CONFIG_SECTION = 'previewServer';
+
 // server status, 0未启动，1正在启动，2已启动，3正在停止
 let serverStatus = STATUS_STOPPED;
 
 // default server port
 let port = 8900;
+
+// default charset
+let defaultCharset = 'UTF-8';
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -32,11 +38,37 @@ function activate(context) {
 
 	output.show();
 
+	// read config
+	// webServerPort, webServerCharset
+	let config = vscode.workspace.getConfiguration(CONFIG_SECTION);
+	if (config.has('webServerPort')) {
+		port = config.get('webServerPort');
+	}
+
+	if (config.has('webServerCharset')) {
+		defaultCharset = config.get('webServerCharset');
+	}
+
+	// config changed after extension activate
+	vscode.workspace.onDidChangeConfiguration((e) => {
+		if (e.affectsConfiguration(CONFIG_SECTION)) {
+			config = vscode.workspace.getConfiguration(CONFIG_SECTION);
+			if (config.has('webServerPort')) {
+				port = config.get('webServerPort');
+			}
+			if (config.has('webServerCharset')) {
+				defaultCharset = config.get('webServerCharset');
+			}
+		}
+	});
+
 	// start server
 	context.subscriptions.push(vscode.commands.registerCommand('preview-server.startGBK', () => {
 		startServer('GBK');
 	}));
-	context.subscriptions.push(vscode.commands.registerCommand('preview-server.startServer', startServer));
+	context.subscriptions.push(vscode.commands.registerCommand('preview-server.startServer', () => {
+		startServer(defaultCharset);
+	}));
 
 	// stop server
 	context.subscriptions.push(vscode.commands.registerCommand('preview-server.stopServer', () => {
@@ -64,13 +96,15 @@ function activate(context) {
 	}));
 
 	statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-	statusBarItem.text = `Port ${port}`;
 	statusBarItem.command = 'preview-server.open';
 	context.subscriptions.push(statusBarItem);
 
 }
 
 function startServer(charset) {
+	if (!charset) {
+		charset = defaultCharset;
+	}
 	// start server
 	if (serverStatus === STATUS_STOPPED) {
 		const folders = vscode.workspace.workspaceFolders;
@@ -82,6 +116,7 @@ function startServer(charset) {
 				serverStatus = STATUS_STARTING;
 				server.start(port, wwwRoot, charset).then(() => {
 					serverStatus = STATUS_RUNNING;
+					statusBarItem.text = `Port ${port}`;
 					statusBarItem.show();
 					vscode.window.showInformationMessage('Preview Server 启动完成');
 				}).catch((err) => {

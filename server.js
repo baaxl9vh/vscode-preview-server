@@ -6,7 +6,6 @@ let httpServer;
 
 const server = {
   start: (port, wwwRoot, charset) => {
-    if (!charset) charset = 'UTF-8';
     return new Promise((resolve, reject) => {
       const app = express();
 

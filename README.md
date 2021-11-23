@@ -15,7 +15,16 @@ HTML快速预览服务器，支持GBK编码文件。
 
 ## Extension Settings
 
++ previewServer.webServerPort: set preview web server's listening port, default: 8900
++ previewServer.webServerCharset: set HTML/Javascript file's response charset, default: UTF-8
+
 ## Release Notes
+
+### 0.0.7
+
++ 降低vscode版本要求为1.41.0以上版本
++ 添加端口和默认charset配置项
++ 加上icon
 
 ### 0.0.6
 
