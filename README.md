@@ -1,10 +1,14 @@
 # Preview Server
 
-HTML快速预览服务器，支持GBK编码文件。
+HTML快速预览服务器，支持GBK编码文件，基于 Express，在 ServerResponse 调用 setHeader 添加 Content-Type: text/html, charset=GBK。
+
+Easy way to preview your HTML. This extension supports HTML and Javascript files that encoded in GBK. Base on Express.
 
 ## Features
 
 快速启动HTML页面预览服务器，服务器默认监听8900端口。
+
+Start a web server to preview html pages. server is listening to 8900 default.
 
 ## Available Commands
 
