@@ -1,6 +1,6 @@
 # Preview Server
 
-HTML预览服务器
+HTML快速预览服务器，支持GBK编码文件。
 
 ## Features
 
@@ -16,6 +16,10 @@ HTML预览服务器
 ## Extension Settings
 
 ## Release Notes
+
+### 0.0.6
+
++ 仅对mime 为 text/html 和 application/javascript 的静态文件添加 charset
 
 ### 0.0.5
 

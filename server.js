@@ -1,5 +1,6 @@
 const express = require('express');
 const http = require('http');
+const mime = require('mime');
 
 let httpServer;
 
@@ -19,7 +20,13 @@ const server = {
         index: 'index.html',
         setHeaders: (res, path, stat) => {
           res.setHeader('Cache-control', 'no-cache');
-          res.setHeader('Content-Type', 'text/html; charset=' + charset);
+          const type = mime.getType(path);
+          if (type === 'text/html') {
+            res.setHeader('Content-Type', 'text/html; charset=' + charset);
+          } else if (type === 'text/css') {
+          } else if (type === 'application/javascript') {
+            res.setHeader('Content-Type', 'application/javascript; charset=' + charset);
+          }
         },
       }));
 

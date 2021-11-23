@@ -1,9 +1,9 @@
 {
 	"name": "preview-server",
 	"displayName": "Preview Server",
-	"description": "Preview Server",
+	"description": "Easy way to preview html with gbk/gb2312 or any charest",
 	"publisher": "jjjjkkkk",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"engines": {
 		"vscode": "^1.62.0"
 	},
@@ -13,12 +13,16 @@
 	},
 	"bugs": "https://github.com/baaxl9vh/vscode-preview-server/issues",
 	"homepage": "https://github.com/baaxl9vh/vscode-preview-server/blob/main/README.md",
-  "keywords": [
-    "web server",
-    "preview server",
-    "http server",
-    "html preview"
-  ],
+	"keywords": [
+		"Web Server",
+		"Preview Server",
+		"HTTP Server",
+		"HTML Preview",
+		"GBK",
+		"GB2312",
+		"GBK HTML",
+		"GB2312 HTML"
+	],
 	"categories": [
 		"Other"
 	],
@@ -76,6 +80,7 @@
 	},
 	"dependencies": {
 		"express": "~4.16.1",
+		"mime": "^3.0.0",
 		"open": "^8.4.0"
 	},
 	"devDependencies": {
