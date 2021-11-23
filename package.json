@@ -3,7 +3,7 @@
 	"displayName": "Preview Server",
 	"description": "Easy way to preview html with gbk/gb2312 or any charest",
 	"publisher": "jjjjkkkk",
-	"version": "0.0.7",
+	"version": "0.0.8",
 	"icon": "4Fds96.png",
 	"engines": {
 		"vscode": "^1.41.1"
