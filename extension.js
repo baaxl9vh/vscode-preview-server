@@ -22,6 +22,9 @@ const STATUS_STOPPING = 3;
 // configuration section name
 const CONFIG_SECTION = 'previewServer';
 
+// info name
+const INFO_NAME = 'Preview Server';
+
 // server status, 0未启动，1正在启动，2已启动，3正在停止
 let serverStatus = STATUS_STOPPED;
 
@@ -74,9 +77,9 @@ function activate(context) {
 	context.subscriptions.push(vscode.commands.registerCommand('preview-server.stopServer', () => {
 		// stop server
 		if (serverStatus === STATUS_STOPPED) {
-			vscode.window.showInformationMessage('Preview Server 未启动');
+			vscode.window.showInformationMessage(`${INFO_NAME}: Server is not running.`);
 		} else if (serverStatus === STATUS_STARTING) {
-			vscode.window.showInformationMessage('Preview Server 正在启动，请等待完成启动再停止');
+			vscode.window.showInformationMessage(`${INFO_NAME}: Server is starting. Please wait seconds.`);
 		} else if (serverStatus === STATUS_RUNNING) {
 			serverStatus = STATUS_STOPPING;
 			server.stop().then(() => {
@@ -84,10 +87,11 @@ function activate(context) {
 			}).finally(() => {
 				statusBarItem.hide();
 				serverStatus = STATUS_STOPPED;
-				vscode.window.showInformationMessage('Preview Server 已经停止');
+				vscode.window.showInformationMessage(`${INFO_NAME}: Server is stopped now.`);
+				output.appendLine(`${INFO_NAME}: Server is stopped now.`);
 			});
 		} else if (serverStatus === STATUS_STOPPING) {
-			vscode.window.showInformationMessage('Preview Server 正在停止，请稍等');
+			vscode.window.showInformationMessage(`${INFO_NAME}: Server is stopping. Please wait seconds.`);
 		}
 	}));
 
@@ -118,28 +122,33 @@ function startServer(charset) {
 					serverStatus = STATUS_RUNNING;
 					statusBarItem.text = `Port ${port}`;
 					statusBarItem.show();
-					vscode.window.showInformationMessage('Preview Server 启动完成');
+					vscode.window.showInformationMessage(`${INFO_NAME}: Start successful.`);
+					output.appendLine(`${INFO_NAME}: Listening on http://localhost:${port}`);
 				}).catch((err) => {
 					serverStatus = STATUS_STOPPED;
-					const msg = `Preview Server Error: ${err.code} ${err.message}`;
+					let msg = `${INFO_NAME}: ${err.code} ${err.message}`;
+					if (err.code === 'EADDRINUSE') {
+						// 端口占用
+						msg = `${INFO_NAME}: Port ${port} already in use`;
+					}
 					vscode.window.showErrorMessage(msg);
 				});
 			} else {
 				// multi root folder
-				const msg = 'Preview Server Error: Current Workspace has multi root path!';
+				const msg = `${INFO_NAME}: Current workspace has multi root path!`;
 				vscode.window.showErrorMessage(msg);
 			}
 		} else {
 			// 没有工作目录
-			const msg = 'Preview Server Error: No Workspace Folders!';
+			const msg = `${INFO_NAME}: No workspace folders!`;
 			vscode.window.showErrorMessage(msg);
 		}
 	} else if (serverStatus === STATUS_STARTING) {
-		vscode.window.showInformationMessage('Preview Server 正在启动');
+		vscode.window.showInformationMessage(`${INFO_NAME}: Server is starting.`);
 	} else if (serverStatus === STATUS_RUNNING) {
-		vscode.window.showInformationMessage('Preview Server 已经运行');
+		vscode.window.showInformationMessage(`${INFO_NAME}: Server is running.`);
 	} else if (serverStatus === STATUS_STOPPING) {
-		vscode.window.showInformationMessage('Preview Server 正在停止，请稍等');
+		vscode.window.showInformationMessage(`${INFO_NAME}: Server is stopping.`);
 	}
 }
 
@@ -148,7 +157,9 @@ function openBrowser() {
 }
 
 // this method is called when your extension is deactivated
-function deactivate() {}
+function deactivate() {
+	if (statusBarItem) statusBarItem.dispose();
+}
 
 module.exports = {
 	activate,

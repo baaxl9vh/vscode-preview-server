@@ -1,6 +1,7 @@
 const express = require('express');
 const http = require('http');
 const mime = require('mime');
+const output = require('./output');
 
 let httpServer;
 
@@ -13,6 +14,10 @@ const server = {
       app.use(express.urlencoded({
         extended: false
       }));
+      app.use((req, res, next) => {
+        output.appendLine(`hostname: ${req.hostname} ${req.method} ${req.originalUrl}`);
+        next();
+      });
       app.use(express.static(wwwRoot, {
         etag: false,
         lastModified: false,

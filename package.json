@@ -62,11 +62,12 @@
 					"default": 8900,
 					"minimum": 80,
 					"maximum": 60000,
-					"description": "Preview web server port"
+					"description": "Set port that server listen on"
 				},
 				"previewServer.webServerCharset": {
 					"type": "string",
 					"default": "UTF-8",
+					"description": "Set HTML/Javascript files charset",
 					"enum": [
 						"UTF-8",
 						"GBK"

@@ -1,9 +1,5 @@
 # Change Log
 
-All notable changes to the "preview-server" extension will be documented in this file.
+简单扩展，不需要 Change Log。
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
-
-- Initial release
+This is a simple extension. Change Log is NOT necessary.

@@ -6,9 +6,9 @@ Easy way to preview your HTML. This extension supports HTML and Javascript files
 
 ## Features
 
-快速启动HTML页面预览服务器，服务器默认监听8900端口。
+快速启动HTML页面预览服务器，服务器默认监听8900端口。如果同时多个项目在进行，服务端口冲突的话，可以在 workspace 设置不同的端口。
 
-Start a web server to preview html pages. server is listening to 8900 default.
+Start a web server to preview html pages. server is listening to 8900 default. If you have multi working projects, you can change the listening port in the workspace.
 
 ## Available Commands
 
@@ -21,19 +21,3 @@ Start a web server to preview html pages. server is listening to 8900 default.
 
 + previewServer.webServerPort: set preview web server's listening port, default: 8900
 + previewServer.webServerCharset: set HTML/Javascript file's response charset, default: UTF-8
-
-## Release Notes
-
-### 0.0.7
-
-+ 降低vscode版本要求为1.41.0以上版本
-+ 添加端口和默认charset配置项
-+ 加上icon
-
-### 0.0.6
-
-+ 仅对mime 为 text/html 和 application/javascript 的静态文件添加 charset
-
-### 0.0.5
-
-+ 修复 Windows 目录错误问题
