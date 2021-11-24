@@ -1,5 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
+const os = require('os');
 const vscode = require('vscode');
 const open = require('open');
 const server = require('./server');
@@ -32,7 +33,11 @@ let serverStatus = STATUS_STOPPED;
 let port = 8900;
 
 // default charset
-let defaultCharset = 'UTF-8';
+const DEFAULT_CHARSET = 'UTF-8';
+
+
+// lan ip or localhost
+let lanIp;
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -40,6 +45,10 @@ let defaultCharset = 'UTF-8';
 function activate(context) {
 
 	output.show();
+
+	lanIp = getMyFirstLanIp() || 'localhost';
+
+	let charset = DEFAULT_CHARSET;
 
 	// read config
 	// webServerPort, webServerCharset
@@ -49,7 +58,7 @@ function activate(context) {
 	}
 
 	if (config.has('webServerCharset')) {
-		defaultCharset = config.get('webServerCharset');
+		charset = config.get('webServerCharset');
 	}
 
 	// config changed after extension activate
@@ -60,7 +69,7 @@ function activate(context) {
 				port = config.get('webServerPort');
 			}
 			if (config.has('webServerCharset')) {
-				defaultCharset = config.get('webServerCharset');
+				charset = config.get('webServerCharset');
 			}
 		}
 	});
@@ -70,7 +79,7 @@ function activate(context) {
 		startServer('GBK');
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand('preview-server.startServer', () => {
-		startServer(defaultCharset);
+		startServer(charset);
 	}));
 
 	// stop server
@@ -96,7 +105,7 @@ function activate(context) {
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('preview-server.open', () => {
-		openBrowser();
+		open(`http://${lanIp}:${port}`);
 	}));
 
 	statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
@@ -107,7 +116,7 @@ function activate(context) {
 
 function startServer(charset) {
 	if (!charset) {
-		charset = defaultCharset;
+		charset = DEFAULT_CHARSET;
 	}
 	// start server
 	if (serverStatus === STATUS_STOPPED) {
@@ -123,7 +132,7 @@ function startServer(charset) {
 					statusBarItem.text = `Port ${port}`;
 					statusBarItem.show();
 					vscode.window.showInformationMessage(`${INFO_NAME}: Start successful.`);
-					output.appendLine(`${INFO_NAME}: Listening on http://localhost:${port}`);
+					output.appendLine(`${INFO_NAME}: Listening on http://${lanIp}:${port}`);
 				}).catch((err) => {
 					serverStatus = STATUS_STOPPED;
 					let msg = `${INFO_NAME}: ${err.code} ${err.message}`;
@@ -152,8 +161,31 @@ function startServer(charset) {
 	}
 }
 
-function openBrowser() {
-	open(`http://localhost:${port}`);
+function getMyFirstLanIp() {
+	// all interfaces
+	const interfaces = os.networkInterfaces();
+	let lanIp;
+	for (let key in interfaces) {
+		const ips = interfaces[key];
+		if (ips) {
+			for (let ip of ips) {
+				if (ip.family === 'IPv4' && !ip.internal) {
+					const address = ip.address;
+					// start with 10, 172, 192
+					if (address.startsWith('10') || address.startsWith('172') || address.startsWith('192')) {
+						// found, only first, break;
+						lanIp = address;
+						break;
+					}
+				}
+			}
+		}
+		if (lanIp) {
+			// found, break
+			break;
+		}
+	}
+	return lanIp;
 }
 
 // this method is called when your extension is deactivated
