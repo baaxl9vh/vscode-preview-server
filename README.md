@@ -2,7 +2,11 @@
 
 HTML快速预览服务器，支持GBK编码文件，基于 Express，在 ServerResponse 调用 setHeader 添加 Content-Type: text/html, charset=GBK。
 
+当工作空间有多个工作目录时，只使用第一个目录来启动服务器。
+
 Easy way to preview your HTML. This extension supports HTML and Javascript files that encoded in GBK. Base on Express.
+
+When workspace have one more folders, Server starts using the first folder only.
 
 ## Features
 

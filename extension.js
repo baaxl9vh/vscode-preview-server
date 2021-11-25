@@ -29,15 +29,17 @@ const INFO_NAME = 'Preview Server';
 // server status, 0未启动，1正在启动，2已启动，3正在停止
 let serverStatus = STATUS_STOPPED;
 
+// server serve path
+let currentWWWRoot = '';
+
 // default server port
 let port = 8900;
 
 // default charset
 const DEFAULT_CHARSET = 'UTF-8';
 
-
 // lan ip or localhost
-let lanIp;
+let lanIp = '';
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -74,6 +76,22 @@ function activate(context) {
 		}
 	});
 
+	vscode.workspace.onDidChangeWorkspaceFolders((e) => {
+		if (serverStatus === STATUS_RUNNING) {
+			// running
+			if (e.removed.length > 0) {
+				// remove one or more
+				for (let folder of e.removed) {
+					if (currentWWWRoot === folder.uri.fsPath) {
+						// server's wwwroot removed, and server is running, stop it.
+						stopServer();
+						break;
+					}
+				}
+			}
+		}
+	});
+
 	// start server
 	context.subscriptions.push(vscode.commands.registerCommand('preview-server.startGBK', () => {
 		startServer('GBK');
@@ -84,28 +102,26 @@ function activate(context) {
 
 	// stop server
 	context.subscriptions.push(vscode.commands.registerCommand('preview-server.stopServer', () => {
-		// stop server
-		if (serverStatus === STATUS_STOPPED) {
-			vscode.window.showInformationMessage(`${INFO_NAME}: Server is not running.`);
-		} else if (serverStatus === STATUS_STARTING) {
-			vscode.window.showInformationMessage(`${INFO_NAME}: Server is starting. Please wait seconds.`);
-		} else if (serverStatus === STATUS_RUNNING) {
-			serverStatus = STATUS_STOPPING;
-			server.stop().then(() => {
-			}).catch((err) => {
-			}).finally(() => {
-				statusBarItem.hide();
-				serverStatus = STATUS_STOPPED;
-				vscode.window.showInformationMessage(`${INFO_NAME}: Server is stopped now.`);
-				output.appendLine(`${INFO_NAME}: Server is stopped now.`);
-			});
-		} else if (serverStatus === STATUS_STOPPING) {
-			vscode.window.showInformationMessage(`${INFO_NAME}: Server is stopping. Please wait seconds.`);
-		}
+		stopServer();
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('preview-server.open', () => {
-		open(`http://${lanIp}:${port}`);
+		if (serverStatus === STATUS_RUNNING) {
+			// server is running
+			const wwwRoot = getFsPathOfFirstWorkspaceFolder();
+			if (wwwRoot) {
+				let pathname = '';
+				if (vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.uri.fsPath.startsWith(wwwRoot)) {
+					pathname = vscode.window.activeTextEditor.document.uri.fsPath.replace(wwwRoot, '');
+				}
+				open(`http://${lanIp}:${port}${pathname}`);
+			} else {
+				const msg = `${INFO_NAME}: No workspace folders!`;
+				vscode.window.showErrorMessage(msg);
+			}
+		} else {
+			vscode.window.showInformationMessage(`${INFO_NAME}: Server is NOT running.`);
+		}
 	}));
 
 	statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
@@ -120,33 +136,25 @@ function startServer(charset) {
 	}
 	// start server
 	if (serverStatus === STATUS_STOPPED) {
-		const folders = vscode.workspace.workspaceFolders;
-		if (folders && Array.isArray(folders)) {
-			if (folders.length === 1) {
-				// single folder
-				const wwwRoot = folders[0].uri.fsPath;
-				// 开始启动
-				serverStatus = STATUS_STARTING;
-				server.start(port, wwwRoot, charset).then(() => {
-					serverStatus = STATUS_RUNNING;
-					statusBarItem.text = `Port ${port}`;
-					statusBarItem.show();
-					vscode.window.showInformationMessage(`${INFO_NAME}: Start successful.`);
-					output.appendLine(`${INFO_NAME}: Listening on http://${lanIp}:${port}`);
-				}).catch((err) => {
-					serverStatus = STATUS_STOPPED;
-					let msg = `${INFO_NAME}: ${err.code} ${err.message}`;
-					if (err.code === 'EADDRINUSE') {
-						// 端口占用
-						msg = `${INFO_NAME}: Port ${port} already in use`;
-					}
-					vscode.window.showErrorMessage(msg);
-				});
-			} else {
-				// multi root folder
-				const msg = `${INFO_NAME}: Current workspace has multi root path!`;
+		const wwwRoot = getFsPathOfFirstWorkspaceFolder();
+		if (wwwRoot) {
+			serverStatus = STATUS_STARTING;
+			server.start(port, wwwRoot, charset).then(() => {
+				currentWWWRoot = wwwRoot;
+				serverStatus = STATUS_RUNNING;
+				statusBarItem.text = `Port ${port}`;
+				statusBarItem.show();
+				vscode.window.showInformationMessage(`${INFO_NAME}: Start successful.`);
+				output.appendLine(`${INFO_NAME}: Listening on http://${lanIp}:${port}`);
+			}).catch((err) => {
+				serverStatus = STATUS_STOPPED;
+				let msg = `${INFO_NAME}: ${err.code} ${err.message}`;
+				if (err.code === 'EADDRINUSE') {
+					// 端口占用
+					msg = `${INFO_NAME}: Port ${port} already in use`;
+				}
 				vscode.window.showErrorMessage(msg);
-			}
+			});
 		} else {
 			// 没有工作目录
 			const msg = `${INFO_NAME}: No workspace folders!`;
@@ -158,6 +166,25 @@ function startServer(charset) {
 		vscode.window.showInformationMessage(`${INFO_NAME}: Server is running.`);
 	} else if (serverStatus === STATUS_STOPPING) {
 		vscode.window.showInformationMessage(`${INFO_NAME}: Server is stopping.`);
+	}
+}
+
+function stopServer() {
+	if (serverStatus === STATUS_STOPPED) {
+		vscode.window.showInformationMessage(`${INFO_NAME}: Server is NOT running.`);
+	} else if (serverStatus === STATUS_STARTING) {
+		vscode.window.showInformationMessage(`${INFO_NAME}: Server is starting. Please wait seconds.`);
+	} else if (serverStatus === STATUS_RUNNING) {
+		serverStatus = STATUS_STOPPING;
+		server.stop().finally(() => {
+			currentWWWRoot = '';
+			statusBarItem.hide();
+			serverStatus = STATUS_STOPPED;
+			vscode.window.showInformationMessage(`${INFO_NAME}: Server is stopped now.`);
+			output.appendLine(`${INFO_NAME}: Server is stopped now.`);
+		});
+	} else if (serverStatus === STATUS_STOPPING) {
+		vscode.window.showInformationMessage(`${INFO_NAME}: Server is stopping. Please wait seconds.`);
 	}
 }
 
@@ -186,6 +213,19 @@ function getMyFirstLanIp() {
 		}
 	}
 	return lanIp;
+}
+
+/**
+ * 
+ * @returns fsPath 当前工作目录绝对地址
+ */
+function getFsPathOfFirstWorkspaceFolder() {
+	let fsPath;
+	const folders = vscode.workspace.workspaceFolders;
+	if (folders && Array.isArray(folders) && folders.length > 0) {
+		fsPath = folders[0].uri.fsPath;
+	}
+	return fsPath;
 }
 
 // this method is called when your extension is deactivated
