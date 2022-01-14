@@ -1,62 +1,47 @@
-# VSCode 编写说明
+# Welcome to your VS Code Extension
 
-## Your First Extension
+## What's in the folder
 
-Make sure you have Node.js and Git installed, then install Yeoman and VS Code Extension Generator with:
+* This folder contains all of the files necessary for your extension.
+* `package.json` - this is the manifest file in which you declare your extension and command.
+  * The sample plugin registers a command and defines its title and command name. With this information VS Code can show the command in the command palette. It doesn’t yet need to load the plugin.
+* `src/extension.ts` - this is the main file where you will provide the implementation of your command.
+  * The file exports one function, `activate`, which is called the very first time your extension is activated (in this case by executing the command). Inside the `activate` function we call `registerCommand`.
+  * We pass the function containing the implementation of the command as the second parameter to `registerCommand`.
 
-```shell
-npm install -g yo generator-code
-```
+## Setup
 
-Run generator to generate the project of extension.
+* install the recommended extensions (amodio.tsl-problem-matcher and dbaeumer.vscode-eslint)
 
-```shell
-yo code
-```
 
-Then, inside the editor, press F5. This will compile and run the extension in a new Extension Development Host window.
+## Get up and running straight away
 
-## Publishing Extensions
+* Press `F5` to open a new window with your extension loaded.
+* Run your command from the command palette by pressing (`Ctrl+Shift+P` or `Cmd+Shift+P` on Mac) and typing `Hello World`.
+* Set breakpoints in your code inside `src/extension.ts` to debug your extension.
+* Find output from your extension in the debug console.
 
-vsce, short for "Visual Studio Code Extensions", is a command-line tool for packaging, publishing and managing VS Code extensions.
+## Make changes
 
-```shell
-npm install -g vsce
-```
+* You can relaunch the extension from the debug toolbar after changing code in `src/extension.ts`.
+* You can also reload (`Ctrl+R` or `Cmd+R` on Mac) the VS Code window with your extension to load your changes.
 
-```shell
-vsce login <publishId>
-# then input token
-vsce package
-vsce publish
-```
 
-## Bundling Extensions
+## Explore the API
 
-esbuild is a fast bundler that's simple to configure. To acquire esbuild, open the terminal and type:
+* You can open the full set of our API when you open the file `node_modules/@types/vscode/index.d.ts`.
 
-```shell
-npm i --save-dev esbuild
-```
+## Run tests
 
-You can run esbuild from the command line but to reduce repetition, using npm scripts is helpful.
+* Open the debug viewlet (`Ctrl+Shift+D` or `Cmd+Shift+D` on Mac) and from the launch configuration dropdown pick `Extension Tests`.
+* Press `F5` to run the tests in a new window with your extension loaded.
+* See the output of the test result in the debug console.
+* Make changes to `src/test/suite/extension.test.ts` or create new test files inside the `test/suite` folder.
+  * The provided test runner will only consider files matching the name pattern `**.test.ts`.
+  * You can create folders inside the `test` folder to structure your tests any way you want.
 
-Merge these entries into the scripts section in package.json:
+## Go further
 
-```json
-"scripts": {
-    "vscode:prepublish": "npm run esbuild-base -- --minify",
-    "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
-    "esbuild": "npm run esbuild-base -- --sourcemap",
-    "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
-    "test-compile": "tsc -p ./"
-},
-```
-
-## Github CI
-
-<https://code.visualstudio.com/api/working-with-extensions/continuous-integration#github-actions>
-
-## 参考
-
-[https://code.visualstudio.com/api](https://code.visualstudio.com/api)
+* Reduce the extension size and improve the startup time by [bundling your extension](https://code.visualstudio.com/api/working-with-extensions/bundling-extension).
+* [Publish your extension](https://code.visualstudio.com/api/working-with-extensions/publishing-extension) on the VSCode extension marketplace.
+* Automate builds by setting up [Continuous Integration](https://code.visualstudio.com/api/working-with-extensions/continuous-integration).

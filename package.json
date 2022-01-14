@@ -33,7 +33,7 @@
 		"onCommand:preview-server.stopServer",
 		"onCommand:preview-server.open"
 	],
-	"main": "./main.js",
+	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
 			{
@@ -81,15 +81,17 @@
 		}
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run esbuild-base -- --minify",
-		"esbuild-base": "esbuild extension.js --bundle --outfile=main.js --external:vscode --format=cjs --platform=node",
-		"esbuild": "npm run esbuild-base -- --sourcemap",
-		"esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+		"vscode:prepublish": "npm run package",
+		"compile": "webpack",
+		"watch": "webpack --watch",
+		"package": "webpack --mode production --devtool hidden-source-map",
+		"compile-tests": "tsc -p . --outDir out",
+		"watch-tests": "tsc -p . -w --outDir out",
+		"pretest": "npm run compile-tests && npm run compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js",
 		"deploy": "vsce publish",
 		"postversion": "git push --follow-tags",
-		"lint": "eslint .",
-		"pretest": "npm run lint",
-		"test": "node ./test/runTest.js",
 		"release:dry": "release-it --dry-run",
 		"release:": "release-it --increment=patch",
 		"prepare": "husky install"
@@ -103,18 +105,26 @@
 		"@commitlint/cli": "^16.0.2",
 		"@commitlint/config-conventional": "^16.0.0",
 		"@release-it/conventional-changelog": "^4.1.0",
-		"@types/glob": "^7.1.4",
+		"@types/express": "^4.17.13",
+		"@types/glob": "^7.2.0",
+		"@types/mime": "^2.0.3",
 		"@types/mocha": "^9.0.0",
 		"@types/node": "14.x",
-		"@types/vscode": "^1.41.0",
-		"@vscode/test-electron": "^1.6.2",
+		"@types/vscode": "^1.63.0",
+		"@typescript-eslint/eslint-plugin": "^5.9.1",
+		"@typescript-eslint/parser": "^5.9.1",
+		"@vscode/test-electron": "^2.0.3",
+		"axios": "^0.24.0",
 		"esbuild": "^0.13.15",
-		"eslint": "^8.1.0",
-		"glob": "^7.1.7",
+		"eslint": "^8.6.0",
+		"glob": "^7.2.0",
 		"husky": "^7.0.0",
 		"mocha": "^9.1.3",
 		"release-it": "^14.12.1",
-		"typescript": "^4.4.4",
-		"vsce": "^2.4.0"
+		"ts-loader": "^9.2.6",
+		"typescript": "^4.5.4",
+		"vsce": "^2.4.0",
+		"webpack": "^5.66.0",
+		"webpack-cli": "^4.9.1"
 	}
 }

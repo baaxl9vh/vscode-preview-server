@@ -6,6 +6,7 @@ node_modules/
 .vscode-test/
 
 out/
+dist/
 
 main.js
 *.vsix

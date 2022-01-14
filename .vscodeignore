@@ -15,3 +15,9 @@ extension.js
 server.js
 
 public/
+
+out/**
+src/**
+webpack.config.js
+**/tsconfig.json
+**/*.ts
