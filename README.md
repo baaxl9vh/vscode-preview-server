@@ -25,3 +25,21 @@ Start a web server to preview html pages. server is listening to 8900 default. I
 
 + previewServer.webServerPort: set preview web server's listening port, default: 8900
 + previewServer.webServerCharset: set HTML/Javascript file's response charset, default: UTF-8
+
+## Run test
+
+```shell
+npm run test
+```
+
+### Mac 遇到问题
+
++ EACCES，权限问题，添加执行权限
+
+```shell
+chmod -R +x .vscode-test/
+```
+
++ dyld: Library not loaded: @rpath，Exit code:   SIGABRT
+
+下载的编译包编译问题，自己下载可以运行的VS Code替换.vscode-test目录的执行文件
