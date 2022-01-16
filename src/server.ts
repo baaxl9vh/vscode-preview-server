@@ -1,17 +1,23 @@
 import * as express from 'express';
 import * as http from 'http';
 import * as mime from 'mime';
+import { DEFAULT_CHARSET, DEFAULT_SERVER_PORT, ServerStatus } from './constants';
 
 import { output } from './output';
 
 let httpServer: http.Server;
 
 export const server = {
-  start: (port: number, root: string, charset: string) => {
+  port: DEFAULT_SERVER_PORT,
+  charset: DEFAULT_CHARSET,
+  status: ServerStatus.stopped,
+  start: function (port: number, root: string, charset: string) {
     return new Promise((resolve, reject) => {
+      this.status = ServerStatus.starting;
       const app = express();
 
       app.use(express.json());
+
       app.use(express.urlencoded({
         extended: false
       }));
@@ -60,17 +66,23 @@ export const server = {
       });
       httpServer.listen(port);
       httpServer.on('error', (error) => {
+        this.status = ServerStatus.stopped;
+        this.charset = charset;
+        this.port = port;
         reject(error);
       });
       httpServer.on('listening', () => {
+        this.status = ServerStatus.running;
         resolve(httpServer);
       });
     });
   },
-  stop: () => {
+  stop: function () {
     return new Promise((resolve, reject) => {
       if (httpServer) {
+        this.status = ServerStatus.stopping;
         httpServer.close(() => {
+          this.status = ServerStatus.stopped;
           resolve(true);
         });
       } else {

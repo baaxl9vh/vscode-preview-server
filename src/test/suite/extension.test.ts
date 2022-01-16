@@ -1,8 +1,9 @@
 import * as assert from 'assert';
 import axios from 'axios';
+import * as sinon from 'sinon';
 import * as vscode from 'vscode';
 
-import { Commands, ConfigKeys, DEFAULT_CHARSET, DEFAULT_SERVER_PORT } from '../../constants';
+import { Charset, Commands, ConfigKeys, DEFAULT_CHARSET, DEFAULT_SERVER_PORT } from '../../constants';
 import { getConfig } from '../../utils';
 
 // You can import and use all API from the 'vscode' module
@@ -48,6 +49,25 @@ suite('Extension Test Suite', async () => {
 		await vscode.commands.executeCommand(Commands.startGbk);
 		const ret = await axios.get(`http://localhost:${DEFAULT_SERVER_PORT}/gbk.html`);
 		assert.strictEqual(ret.headers['content-type'], 'text/html; charset=GBK');
+	});
+
+	test('should server restart with a random charset', async () => {
+		sinon.restore();
+		const charsets = [];
+		for (let key in Charset) {
+			charsets.push((Charset as any)[key]);
+		}
+		charsets.sort(() => Math.random() - 0.5);
+
+		const charset = charsets.pop();
+
+		sinon.stub(vscode.window, 'showQuickPick').callsFake((): Thenable<vscode.QuickPickItem | undefined> => {
+			return charset as any;
+		});
+		await vscode.commands.executeCommand(Commands.restart);
+		const ret = await axios.get(`http://localhost:${DEFAULT_SERVER_PORT}/utf8.html`);
+		assert.strictEqual(ret.headers['content-type'], `text/html; charset=${charset}`);
+		sinon.restore();
 	});
 
 	test('should extension get configuration', () => {

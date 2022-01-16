@@ -4,6 +4,10 @@ export const DEFAULT_CHARSET = 'UTF-8';
 export enum Charset {
   gbk = 'GBK',
   utf8 = 'UTF-8',
+  gb2312 = 'GB2312',
+  big5 = 'Big5',
+  big5hk = 'Big5-HKSCS',
+  eucKR = 'EUC-KR',
 }
 
 export const DEFAULT_SERVER_PORT = 8900;
@@ -32,6 +36,11 @@ export enum Commands {
    * 停止服务器
    */
   stop = 'preview-server.stopServer',
+
+  /**
+   * 重启服务器
+   */
+  restart = 'preview-server.restart',
   /**
    * 打开浏览器
    */
@@ -43,18 +52,18 @@ export enum ServerStatus {
   /**
    * 停止
    */
-  stopped = 0,
+  stopped = 'STOPPED',
   /**
    * 正在启动
    */
-  starting = 1,
+  starting = 'STARTING',
   /**
    * 完成启动，正在运行
    */
-  running = 2,
+  running = 'RUNNING',
   /**
    * 正在停止中
    */
-  stopping = 3,
+  stopping = 'STOPPING',
 }
 

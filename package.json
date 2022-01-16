@@ -31,6 +31,7 @@
 		"onCommand:preview-server.startGBK",
 		"onCommand:preview-server.startServer",
 		"onCommand:preview-server.stopServer",
+		"onCommand:preview-server.restart",
 		"onCommand:preview-server.open"
 	],
 	"main": "./dist/extension.js",
@@ -47,6 +48,10 @@
 			{
 				"command": "preview-server.stopServer",
 				"title": "Preview Server: Stop Server"
+			},
+			{
+				"command": "preview-server.restart",
+				"title": "Preview Server: Restart server with charset"
 			},
 			{
 				"command": "preview-server.open",
@@ -70,11 +75,19 @@
 					"description": "Set HTML/Javascript files charset",
 					"enum": [
 						"UTF-8",
-						"GBK"
+						"GBK",
+						"GB2312",
+						"Big5",
+						"Big5-HKSCS",
+						"EUC-KR"
 					],
 					"enumDescriptions": [
 						"Preview web server use UTF-8 charset",
-						"Preview we server use GBK charset"
+						"Preview web server use GBK charset",
+						"Preview web server use GB2312 charset",
+						"Preview web server use Big5 charset",
+						"Preview web server use Big5-HKSCS charset",
+						"Preview we server use EUC-KR charset"
 					]
 				}
 			}
@@ -110,6 +123,7 @@
 		"@types/mime": "^2.0.3",
 		"@types/mocha": "^9.0.0",
 		"@types/node": "14.x",
+		"@types/sinon": "^10.0.6",
 		"@types/vscode": "^1.30.0",
 		"@typescript-eslint/eslint-plugin": "^5.9.1",
 		"@typescript-eslint/parser": "^5.9.1",
@@ -120,6 +134,7 @@
 		"husky": "^7.0.0",
 		"mocha": "^9.1.3",
 		"release-it": "^14.12.1",
+		"sinon": "^12.0.1",
 		"ts-loader": "^9.2.6",
 		"typescript": "^4.5.4",
 		"vsce": "^2.4.0",
