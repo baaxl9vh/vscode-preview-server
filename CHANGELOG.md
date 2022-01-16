@@ -1,3 +1,10 @@
+## [0.0.13](https://github.com/baaxl9vh/vscode-preview-server/compare/v0.0.12...v0.0.13) (2022-01-16)
+
+
+### Features
+
+* add restart with charset command ([d0ae170](https://github.com/baaxl9vh/vscode-preview-server/commit/d0ae1704f1113abc4f10460d1884468acfd97199))
+
 ## [0.0.12](https://github.com/baaxl9vh/vscode-preview-server/compare/v0.0.11...v0.0.12) (2022-01-14)
 
 
