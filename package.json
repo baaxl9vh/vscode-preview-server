@@ -1,7 +1,7 @@
 {
 	"name": "preview-server",
 	"displayName": "Preview Server",
-	"description": "Easy way to preview html with gbk/gb2312 or any charest",
+	"description": "Easy way to preview html with gbk/gb2312 or any charset",
 	"publisher": "jjjjkkkk",
 	"version": "0.0.13",
 	"icon": "4Fds96.png",
@@ -51,7 +51,7 @@
 			},
 			{
 				"command": "preview-server.restart",
-				"title": "Preview Server: Restart server with charset"
+				"title": "Preview Server: Restart or start server with charset"
 			},
 			{
 				"command": "preview-server.open",
@@ -87,7 +87,7 @@
 						"Preview web server use GB2312 charset",
 						"Preview web server use Big5 charset",
 						"Preview web server use Big5-HKSCS charset",
-						"Preview we server use EUC-KR charset"
+						"Preview web server use EUC-KR charset"
 					]
 				}
 			}

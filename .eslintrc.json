@@ -19,6 +19,7 @@
     "ignorePatterns": [
         "out",
         "dist",
+        "src/lang/**",
         "**/*.d.ts"
     ]
 }
